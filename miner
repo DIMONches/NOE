@@ -1,0 +1,64 @@
+function tr()
+
+   turtle.turnRight()
+   turtle.dig()
+   turtle.forward()
+   turtle.turnRight()
+
+end
+
+function tl()
+
+   turtle.turnLeft()
+   turtle.dig()
+   turtle.forward()
+   turtle.turnLeft()
+
+end
+
+turtle.refuel(64)
+
+args= {...}
+
+
+if args[1] == nil or args[2] == nil or args[3] == nil
+then
+
+   print("Use miner <length> <width> <depth>")
+
+end
+
+length= args[1]
+width= args[2]
+depth= args[3]
+
+step = 0
+ -- 0 vpravo
+ -- 1 vlevo
+
+for y=1,depth do
+
+   for z=1,width do
+   
+      for x=1,length do
+	  
+	     if turtle.detect() == true
+		 then
+		    turtle.dig()
+			turtle.forward()
+		 else
+		    turtle.forward()
+		 end
+	 
+	  end
+	  
+	  if step == 0
+	  then
+	     
+	  end
+          
+   end
+
+end
+
+
