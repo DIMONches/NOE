@@ -1,0 +1,608 @@
+function createButton()
+local stt= 1
+term.clear()
+term.setCursorPos(x/2-10,y/2)
+term.write('Create file or directory ?')
+term.setCursorPos(x/2-5,y/2+1)
+
+ if stt == 1
+          then
+
+             term.write('[File] Directory')
+
+          end
+
+          if stt == 2
+          then
+
+             term.write(' File [Directory]')
+
+          end
+  while true do
+   event,param1= os.pullEvent()
+       term.clear()
+       term.setCursorPos(x/2-10,y/2)
+      if event == 'key'
+      then
+          if param1 == 203 
+            then
+           
+             stt= stt-1
+
+          end
+
+          if param1 == 205 
+            then
+             stt= stt+1
+          end
+
+          if stt >= 2
+            then
+             stt= 2
+          end
+           
+           if stt <= 1
+            then
+             stt= 1
+          end
+        end
+
+
+        if param1 == 28
+          then
+
+             if stt == 1
+             then
+                term.clear()
+                term.setCursorPos(x/2-10,y/2)
+                term.write('File name ')
+                local name= read()
+                if name ~= nil
+                then
+                
+                   shell.run('edit',name)
+                   break
+
+                end
+             end
+             if stt == 2
+            then
+
+              term.clear()
+                term.setCursorPos(x/2-10,y/2)
+                term.write('Directory name ')
+                local name= read()
+                if name ~= nil
+                then
+                
+                   if steps == 1 and fs.exists(path1..'/'..name) == false
+                    then
+                    
+                       fs.makeDir(path1..'/'..name)
+                       break
+                    end
+                    if steps == 2 and fs.exists(path2..'/'..name) == false
+                    then
+
+                       fs.makeDir(path2..'/'..name)
+                       break
+                    end
+
+                end
+
+            end
+
+          end
+
+        term.write('Create file or directory ?')
+        term.setCursorPos(x/2-5,y/2+1)
+        if stt == 1
+          then
+
+             term.write('[File] Directory')
+
+          end
+
+          if stt == 2
+          then
+
+             term.write(' File [Directory]')
+
+          end
+
+      end
+end
+
+
+function deleteButton(number)
+
+   term.clear()
+   term.setCursorPos(x/2-5,y/2)
+   st= 2
+   while true do
+     
+    
+term.setCursorPos(x/2-15,y/2)
+    if number == 1
+          then
+           
+             term.write('You really delete file '..fileList1[step1]..'?')
+          end
+
+          if number == 2
+          then
+             term.write('You really delete file ',fileList2[step2]..'?')
+          end
+
+          term.setCursorPos(x/2-5,y/2+1)
+
+          if st == 1
+            then
+            term.write('[Yes] No')
+          end
+          if st == 2
+            then
+            term.write(' Yes [No]')
+          end
+
+
+      event,param1= os.pullEvent()
+       term.clear()
+       term.setCursorPos(x/2-10,y/2)
+      if event == 'key'
+        then
+           if param1 == 203 
+            then
+           
+             st= st-1
+
+          end
+
+          if param1 == 205 
+            then
+             st= st+1
+          end
+
+          if st >= 2
+            then
+             st= 2
+          end
+           
+           if st <= 1
+            then
+             st= 1
+          end
+        end
+
+        if param1 == 28 and st == 1
+          then
+             if number == 1
+              then
+
+                 fs.delete(path1..'/'..fileList1[step1])
+                 break
+
+              end
+              if number == 2
+              then
+
+                 fs.delete(path1..'/'..fileList1[step2])
+                 break
+              end
+
+          end
+
+          if param1 == 28 and st == 2
+            then
+
+               break
+
+            end
+       
+          term.setCursorPos(x/2-5,y/2+1)
+
+          if st == 1
+            then
+            term.write('[Yes] No')
+          end
+          if st == 2
+            then
+            term.write(' Yes [No]')
+          end
+   end
+end
+
+
+function last_path(line)
+lines= {}
+for i=1,#line do
+
+   lines[i]= string.sub(line,i,i)
+end
+
+   for i=#line,1,-1 do
+   
+      if lines[i] == '/'
+        then
+         count= #line-i
+         break
+      end
+
+   end
+   finish= ''
+   finish= string.sub(line,1,#line-count-1)
+   return finish
+end
+
+
+x,y= term.getSize()
+
+function drawBackGround(color)
+   
+  
+  if steps == 1
+  then
+     for j=1,y do
+
+        for a=1,x/2 do
+
+           paintutils.drawPixel(a,j,256)
+
+        end
+
+     end
+
+     for j=1,y do
+
+        for a=x/2,x+1 do
+
+           paintutils.drawPixel(a,j,128)
+
+        end
+
+     end
+  end
+
+  if steps == 2
+  then
+     for j=1,y do
+
+        for a=1,x/2 do
+
+           paintutils.drawPixel(a,j,128)
+
+        end
+
+     end
+
+     for j=1,y do
+
+        for a=x/2,x+1 do
+
+           paintutils.drawPixel(a,j,256)
+
+        end
+
+     end
+  end
+   paintutils.drawPixel(x,y,1)
+
+end
+
+function draw()
+
+drawBackGround(128)
+paintutils.drawLine(x/2,2,x/2,y,2048)
+
+term.setCursorPos(1,1)
+term.write(' F1 edit,   F2 delete,  F3 run F4 copy <- backspace')
+term.setCursorPos(1,2)
+
+l1,l2= 1,y-2
+ll1,ll2= 1,y-2
+
+if step1 > l2 --and steps == 1
+	then
+	l1= l2+1
+	l2= l2+y
+end
+if step1 < l1 --and steps == 1
+	then
+	l2= l1
+	l1= l1-y
+end
+
+
+if step2 > ll2 --and steps == 2
+	then
+	ll1= ll2+1
+	ll2= ll2+y
+end
+if step2 < ll1 --and steps == 2
+	then
+	ll2= ll1
+	ll1= ll1-y
+end
+if steps == 1
+  then
+    paintutils.drawPixel(x,y,256)
+else
+  paintutils.drawPixel(x,y,128)
+end
+term.setCursorPos(6,2)
+term.write('..'..path1)
+term.setCursorPos(6,3)
+countl= 2
+
+
+
+for i=l1,l2 do
+
+	     if fileList1[i] ~= nil
+	     	then
+	     	   if step1 == i --and steps == 1
+               then
+               if fs.isDir(path1..'/'..fileList1[i]) == true
+                then
+                 term.setTextColor(2)
+              end
+	     	      term.write('['..fileList1[i]..']')
+	     	       term.setTextColor(1)
+           else
+             if fs.isDir(path1..'/'..fileList1[i]) == true
+                then
+                 term.setTextColor(2)
+              end
+	     	   	  term.write(' '..fileList1[i])
+	     	      term.setTextColor(1)
+           end
+	     	    term.setCursorPos(6,countl+2)
+                countl= countl+1     
+               
+            end
+            if fileList1[i+1] == nil
+            	then
+            	break
+            end
+	end
+  if steps == 2
+  then
+    paintutils.drawPixel(x,y,256)
+else
+  paintutils.drawPixel(x,y,128)
+end
+term.setCursorPos(x/2+7,2)
+term.write('..'..path2)
+term.setCursorPos(x/2+7,3)
+countll= 2
+
+for i=ll1,ll2 do
+       if fileList2[i] ~= nil
+         then
+            if step2 == i --and steps == 2
+               then
+                if fs.isDir(path2..'/'..fileList2[i]) == true
+                then
+                 term.setTextColor(2)
+              end
+	     	      term.write('['..fileList2[i]..']')
+	     	       term.setTextColor(1)
+           else
+             if fs.isDir(path2..'/'..fileList2[i]) == true
+                then
+                 term.setTextColor(2)
+              end
+	     	   	  term.write(' '..fileList2[i])
+	     	      term.setTextColor(1)
+           end
+            term.setCursorPos(x/2+7,countll+2)
+            countll= countll+1     
+        end
+         if fileList2[i+1] == nil
+            	then
+            	break
+            end  
+
+	end
+end
+
+
+step = 1
+steps= 1
+path1= ''
+path2= ''
+step1= 1
+step2= 1
+function main()
+fileList1= {}
+fileList2= {}
+   while true do
+   	  fileList1= fs.list(path1)
+   	  fileList2= fs.list(path2)
+      draw()
+      --print(l1,' ',l2,' ',step1)
+      event,param1,param2= os.pullEvent()
+      if event == 'key'
+      	then
+      	 if param1 == 208
+      	 	then
+      	 	   if steps == 1
+              then
+               step1= step1+1
+            end
+            if steps == 2
+              then
+              step2= step2+1
+            end
+      	 	end
+      	 	if param1 == 200
+      	 		then
+      	 		   if steps == 1
+                then
+               step1= step1-1
+                end
+            if steps == 2
+              then
+              step2= step2-1
+              end
+      	 	end
+      	 	if step <=1
+      	 		then
+      	 		step= 1
+      	 	end
+            
+            if param1 == 203
+            	then
+            	steps= steps-1
+            end
+            
+            if param1 == 205
+            	then
+            	steps= steps+1
+            end
+
+            if param1 == 28
+            	then
+                   if steps == 1
+                   	then
+                   	if fs.isDir(path1..'/'..fileList1[step1]) == true
+                     then
+                     path1= path1..'/'..fileList1[step1]
+                     fileList1= fs.list(path1)
+                      step1= 1
+                  end
+                   end
+                   if steps == 2
+                   	then
+                   	if fs.isDir(path2..'/'..fileList2[step2]) == true
+                     then
+                     path2= path2..'/'..fileList2[step2]
+                     fileList2= fs.list(path2)
+                      step2= 1
+                  end
+                   end 
+            	end
+             
+                 if param1 == 14
+                 then
+                 if steps == 1
+                  then
+                  path1= last_path(path1)
+                  fileList1= fs.list(path1)
+                end
+                 if steps == 2
+                  then
+                  path2= last_path(path2)
+                  fileList2= fs.list(path2)
+                end
+            end
+
+                    if param1 == 59
+                then
+                if steps == 1
+                  then
+
+                    shell.run('edit',fileList1[step1])
+
+                end
+                  if steps == 2
+                  then
+
+                    shell.run('edit',fileList2[step2])
+
+                end
+              end
+
+
+                    if param1 == 60
+                then
+                if steps == 1
+                  then
+
+                    deleteButton(1)
+
+                end
+                  if steps == 2
+                  then
+
+                    deleteButton(2)
+
+                end
+              end
+
+              if param1 == 61
+              then
+              
+                 if steps == 1
+                  then
+
+                     shell.run(fileList1[step1])
+                     term.clear()
+
+                  end
+
+
+                 if steps == 2
+                  then
+
+                     shell.run(fileList2[step2])
+                     term.clear()
+
+                  end
+
+              end
+
+
+              if param1 == 62
+              then
+              
+                 if steps == 1
+                  then
+                     
+                     fs.copy(path1..'/'..fileList1[step1],path2..'/'..fileList2[step2]) 
+
+                  end
+
+              end
+
+              if param1 == 63
+                then
+
+                   createButton()
+
+                end
+
+          
+            if steps<=1
+            	then
+            	steps= 1
+            end
+
+            if steps>=2
+            	then
+            	steps= 2
+            end
+
+      	 	if step1 >= #fileList1-- and steps == 1
+      	 		then
+      	 		    step1= #fileList1
+      	 		end
+            if step1 <= 1-- and steps == 1
+            then
+                step1= 1
+            end
+      	 		if step2 >= #fileList2 --and steps == 2
+      	 			then
+      	 			step2 = #fileList2
+      	 		end
+            if step2 <= 1-- and steps == 1
+            then
+                step2= 1
+            end
+      end
+
+   end
+
+end
+main()
+paintutils.drawPixel(x,y,32768)
